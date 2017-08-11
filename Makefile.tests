@@ -1,0 +1,32 @@
+CONFIGS = MOM6-examples
+BUILD = build
+COMPILERS = gnu intel pgi
+SHELL = bash
+
+TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar non_symmetric_$(c).tar) static_gnu.tar
+
+all: $(TAR_FILES)
+gnu: non_symmetric_gnu.tar symmetric_gnu.tar static_gnu.tar
+intel: non_symmetric_intel.tar symmetric_intel.tar
+pgi: non_symmetric_pgi.tar symmetric_pgi.tar
+
+manifest.mk:
+	bash Gitlab/generate_manifest.sh > manifest.mk
+
+# 1 - prefix, 2 = compiler
+define generate-tars
+$(1)_$(2).tar: manifest.mk
+	make -f MRS/Makefile.tests clean_$(2) -s
+	@echo -n '$(1) $2 starting at ' && date
+	time make -f MRS/Makefile.run $(2)_all $(3) -s -j
+	@echo -n '$(1) $2 finished at ' && date
+	cd $(CONFIGS) && tar cf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
+endef
+$(foreach c,$(COMPILERS),$(eval $(call generate-tars,non_symmetric,$(c),)))
+$(foreach c,$(COMPILERS),$(eval $(call generate-tars,symmetric,$(c),MEMORY=dynamic_symmetric)))
+$(foreach c,$(COMPILERS),$(eval $(call generate-tars,static,$(c),MEMORY=static)))
+
+clean_%:
+	find $(CONFIGS)/[oilc]*/ -name ocean.stats.$* | xargs -r rm
+clean:
+	rm -f $(TAR_FILES)
