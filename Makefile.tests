@@ -3,30 +3,68 @@ BUILD = build
 COMPILERS = gnu intel pgi
 SHELL = bash
 
-TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar non_symmetric_$(c).tar) static_gnu.tar
+TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
 
 all: $(TAR_FILES)
-gnu: non_symmetric_gnu.tar symmetric_gnu.tar static_gnu.tar
-intel: non_symmetric_intel.tar symmetric_intel.tar
-pgi: non_symmetric_pgi.tar symmetric_pgi.tar
+gnu: non_symmetric_gnu.tar.gz symmetric_gnu.tar.gz static_gnu.tar.gz
+intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
+pgi: non_symmetric_pgi.tar.gz symmetric_pgi.tar.gz
 
 manifest.mk:
 	bash Gitlab/generate_manifest.sh > manifest.mk
 
-# 1 - prefix, 2 = compiler
-define generate-tars
-$(1)_$(2).tar: manifest.mk
+# Runs model and tars up regression files
+# 1 - prefix, 2 - compiler, 3 - make args
+define collect-regressions
+$(1)_$(2).tar.gz: manifest.mk
 	make -f MRS/Makefile.tests clean_$(2) -s
 	@echo -n '$(1) $2 starting at ' && date
-	time make -f MRS/Makefile.run $(2)_all $(3) -s -j
+	time make -f MRS/Makefile.run $(3) -s -j
 	@echo -n '$(1) $2 finished at ' && date
-	cd $(CONFIGS) && tar cf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
+	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
 endef
-$(foreach c,$(COMPILERS),$(eval $(call generate-tars,non_symmetric,$(c),)))
-$(foreach c,$(COMPILERS),$(eval $(call generate-tars,symmetric,$(c),MEMORY=dynamic_symmetric)))
-$(foreach c,$(COMPILERS),$(eval $(call generate-tars,static,$(c),MEMORY=static)))
+$(foreach c,$(COMPILERS),$(eval $(call collect-regressions,non_symmetric,$(c),$(c)_all)))
+$(foreach c,$(COMPILERS),$(eval $(call collect-regressions,symmetric,$(c),$(c)_all MEMORY=dynamic_symmetric)))
+$(foreach c,$(COMPILERS),$(eval $(call collect-regressions,static,$(c),$c_static_ocean_only MEMORY=static)))
 
 clean_%:
 	find $(CONFIGS)/[oilc]*/ -name ocean.stats.$* | xargs -r rm
 clean:
 	rm -f $(TAR_FILES)
+
+%.md5:
+	(cd regressions ; md5sum `find [oilc]* -name ocean.stats.$*`) > $@
+
+# Unpacks regressions from tar file and checks status
+# 1 - compiler, 2 - tar file prefix
+define check-regressions
+$(1)_$(2): $(1).md5
+	@mkdir -p _$(1)
+	cd _$(1) ; tar zxf ../$(2)_$(1).tar.gz
+	cd _$(1) ; md5sum -c ../$(1).md5
+endef
+$(foreach c,$(COMPILERS),$(eval $(call check-regressions,$(c),symmetric)))
+$(foreach c,$(COMPILERS),$(eval $(call check-regressions,$(c),non_symmetric)))
+
+# Unpacks static regressions from tar file and checks status
+# 1 - compiler, 2 - tar file prefix
+define check-static-regressions
+$(1)_$(2): $(1).md5
+	@mkdir -p _$(1)
+	cd _$(1) ; tar zxf ../symmetric_$(1).tar.gz
+	cd _$(1) ; tar zxf ../$(2)_$(1).tar.gz
+	cd _$(1) ; md5sum -c ../$(1).md5
+endef
+$(foreach c,$(COMPILERS),$(eval $(call check-static-regressions,$(c),static)))
+
+# Unpacks non-symmetric regressions and compares to symmetric regressions
+# 1 - compiler
+define check-layout-reproducibility
+$(1)_layout:
+	@mkdir -p _$(1)
+	cd _$(1) ; tar zxf ../symmetric_$(1).tar.gz
+	cd _$(1) ; md5sum `find [oilc]* -name ocean.stats.$(1)` > $(1).md5
+	cd _$(1) ; tar zxf ../non_symmetric_$(1).tar.gz
+	cd _$(1) ; md5sum -c $(1).md5
+endef
+$(foreach c,$(COMPILERS),$(eval $(call check-layout-reproducibility,$(c))))
