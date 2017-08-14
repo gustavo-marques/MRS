@@ -12,6 +12,8 @@ SHELL = bash
 COMPILERS = gnu intel pgi
 LOG = > log
 
+SKIP = circle_obcs|tracer_mixing|unit_test|mixed_layer_restrat_2d
+
 all:
 
 # Converts a path a/b/c to a list "a b c"
@@ -68,10 +70,10 @@ endef
 $(foreach c,gnu intel pgi,$(foreach o,ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3_SIS coupled_AM2_LM3_SIS2,$(eval $(call run-dynamic-model,$(c),$(o)))))
 
 define stats-files
-$$(shell grep " NPES" manifest.mk | grep $(3) | grep $(1) | sed 's/%:.*/$(2)/')
+$$(shell grep " NPES" manifest.mk | grep $(3) | grep $(1) | egrep -v "$(SKIP)" | sed 's/%:.*/$(2)/')
 endef
 define restart-test
-$$(shell grep " NPES" manifest.mk | grep $(2) | grep 02.ignore | egrep -v "circle|tracer_mixing|unit_test" | sed 's,02.ignore.*,restart.$(1),')
+$$(shell grep " NPES" manifest.mk | grep $(2) | grep 02.ignore | egrep -v "$(SKIP)" | sed 's,02.ignore.*,restart.$(1),')
 endef
 .SECONDARY: $(shell grep " NPES" manifest.mk | sed 's,ocean.stats.*,input.nml,')
 .SECONDARY: $(shell grep " NPES" manifest.mk | sed 's,ocean.stats.*,MOM_input,')
