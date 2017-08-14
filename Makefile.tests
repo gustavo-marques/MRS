@@ -11,7 +11,7 @@ intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
 pgi: non_symmetric_pgi.tar.gz symmetric_pgi.tar.gz
 
 manifest.mk:
-	bash Gitlab/generate_manifest.sh > manifest.mk
+	bash MRS/generate_manifest.sh > manifest.mk
 
 # Runs model and tars up regression files
 # 1 - prefix, 2 - compiler, 3 - make args

@@ -21,18 +21,18 @@ noop =
 rel_path = $(subst $(noop) $(noop),,$(patsubst %,../,$(call slash_to_list,$(1))))
 
 manifest.mk:
-	bash Gitlab/generate_manifest.sh > manifest.mk
+	bash MRS/generate_manifest.sh > manifest.mk
 
 # Setup restart structure
 $(foreach s,01 12 02,$(foreach f,input.nml MOM_input MOM_override,$(CONFIGS)/%/$(s).ignore/$(f))): | $(CONFIGS)/%
-	bash Gitlab/setup_restart_test.sh $|
+	bash MRS/setup_restart_test.sh $|
 
 %/restart.gnu: %/12.ignore/ocean.stats.gnu %/02.ignore/ocean.stats.gnu
-	bash Gitlab/check_restarts.sh $^
+	bash MRS/check_restarts.sh $^
 %/restart.intel: %/12.ignore/ocean.stats.intel %/02.ignore/ocean.stats.intel
-	bash Gitlab/check_restarts.sh $^
+	bash MRS/check_restarts.sh $^
 %/restart.pgi: %/12.ignore/ocean.stats.pgi %/02.ignore/ocean.stats.pgi
-	bash Gitlab/check_restarts.sh $^
+	bash MRS/check_restarts.sh $^
 
 # Running
 include manifest.mk

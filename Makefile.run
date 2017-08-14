@@ -15,9 +15,9 @@ COMPILERS = gnu intel pgi
 LOG = > log
 
 all:
-	time make -f Gitlab/Makefile.run gnu_all -s -j
-	time make -f Gitlab/Makefile.run intel_all -s -j
-	time make -f Gitlab/Makefile.run pgi_all -s -j
+	time make -f MRS/Makefile.run gnu_all -s -j
+	time make -f MRS/Makefile.run intel_all -s -j
+	time make -f MRS/Makefile.run pgi_all -s -j
 
 # Converts a path a/b/c to a list "a b c"
 slash_to_list = $(subst /, ,$(1))
@@ -26,7 +26,7 @@ noop =
 rel_path = $(subst $(noop) $(noop),,$(patsubst %,../,$(call slash_to_list,$(1))))
 
 manifest.mk:
-	bash Gitlab/generate_manifest.sh > manifest.mk
+	bash MRS/generate_manifest.sh > manifest.mk
 
 # Running
 include manifest.mk
