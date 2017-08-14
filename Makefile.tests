@@ -5,7 +5,7 @@ SHELL = bash
 
 TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
 
-all: $(TAR_FILES)
+all: $(TAR_FILES) gnu_run_restart
 gnu: non_symmetric_gnu.tar.gz symmetric_gnu.tar.gz static_gnu.tar.gz
 intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
 pgi: non_symmetric_pgi.tar.gz symmetric_pgi.tar.gz
@@ -30,7 +30,7 @@ $(foreach c,$(COMPILERS),$(eval $(call collect-regressions,static,$(c),$c_static
 clean_%:
 	find $(CONFIGS)/[oilc]*/ -name ocean.stats.$* | xargs -r rm
 clean:
-	rm -f $(TAR_FILES) $(foreach c,$(COMPILERS),_$(c) $(c).md5)
+	rm -rf $(TAR_FILES) $(foreach c,$(COMPILERS),_$(c) $(c).md5)
 
 # Unpacks regressions from tar file and checks status
 # 1 - compiler, 2 - tar file prefix
@@ -71,11 +71,18 @@ $(foreach c,$(COMPILERS),$(eval $(call check-layout-reproducibility,$(c))))
 
 # Runs restart tests
 # 1 - compiler
-define test-restarts
-$(1)_restart:
+define run-restart-tests
+$(1)_run_restart:
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=01
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=02
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=12
+endef
+$(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
+
+# Tests restart output
+# 1 - compiler
+define test-restarts
+$(1)_restart:
 	make -f MRS/Makefile.restart restart_$(1)_ocean_only -s -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
