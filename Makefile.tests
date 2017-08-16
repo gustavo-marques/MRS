@@ -4,8 +4,15 @@ COMPILERS = gnu intel pgi
 SHELL = bash
 
 TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
+SYM_TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz)
+NON_SYM_TAR_FILES = $(foreach c,$(COMPILERS),non_symmetric_$(c).tar.gz) static_gnu.tar.gz
+#TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
+TAR_FILES = $(SYM_TAR_FILES) $(NON_SYM_TAR_FILES)
 
-all: $(TAR_FILES) gnu_run_restart
+all:
+	make -f MRS/Makefile.tests $(NON_SYM_TAR_FILES)
+	make -f MRS/Makefile.tests $(SYM_TAR_FILES)
+	make -f MRS/Makefile.tests gnu_run_restart
 gnu: non_symmetric_gnu.tar.gz symmetric_gnu.tar.gz static_gnu.tar.gz
 intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
 pgi: non_symmetric_pgi.tar.gz symmetric_pgi.tar.gz
