@@ -37,7 +37,7 @@ $(foreach s,01 12 02,$(foreach f,input.nml MOM_input MOM_override,$(CONFIGS)/%/$
 	bash MRS/check_restarts.sh $^
 
 # Running
-include manifest.mk
+-include manifest.mk
 
 MODE ?= repro
 MEMORY ?= dynamic
