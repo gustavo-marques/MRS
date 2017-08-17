@@ -7,12 +7,12 @@ TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).ta
 SYM_TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz)
 NON_SYM_TAR_FILES = $(foreach c,$(COMPILERS),non_symmetric_$(c).tar.gz) static_gnu.tar.gz
 #TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
-TAR_FILES = $(SYM_TAR_FILES) $(NON_SYM_TAR_FILES)
+TAR_FILES = $(SYM_TAR_FILES) $(NON_SYM_TAR_FILES) restart_results_gnu.tar.gz
 
 all:
 	make -f MRS/Makefile.tests $(NON_SYM_TAR_FILES)
 	make -f MRS/Makefile.tests $(SYM_TAR_FILES)
-	make -f MRS/Makefile.tests gnu_run_restart
+	make -f MRS/Makefile.tests restart_results_gnu.tar.gz
 gnu: non_symmetric_gnu.tar.gz symmetric_gnu.tar.gz static_gnu.tar.gz
 intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
 pgi: non_symmetric_pgi.tar.gz symmetric_pgi.tar.gz
@@ -83,13 +83,16 @@ $(1)_run_restart:
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=01
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=02
 	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=12
+restart_results_$(1).tar.gz: $(1)_run_restart
+	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -path "*/??.ignore/*" -name ocean.stats.$(1)`
 endef
 $(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
 
 # Tests restart output
 # 1 - compiler
 define test-restarts
-$(1)_restart:
+$(1)_check_restarts:
+	cd $(CONFIGS) ; tar zxf ../restart_results_$(1).tar.gz
 	make -f MRS/Makefile.restart restart_$(1)_ocean_only -s -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
