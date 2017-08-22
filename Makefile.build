@@ -44,6 +44,7 @@ AM2_REPOS=$(AM2)/atmos_drivers $(AM2)/atmos_fv_dynamics $(AM2)/atmos_shared_am3
 SIS1_SRC=$(SRC_DIR)/sis1
 
 SHELL = bash
+COMPONENT_SRC ?= fms coupler icebergs atmos_null land_null ice_ocean_extras sis1 ice_param lm3 am2
 COMPILERS ?= gnu intel pgi
 MODES = repro debug coverage openmp
 LOG = > log
@@ -105,7 +106,7 @@ define secondaries
 .SECONDARY: $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(BUILD)/$(c)/$(m)/$(1)/Makefile))
 .SECONDARY: $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(BUILD)/$(c)/$(m)/$(1)/lib$(1).a))
 endef
-$(foreach d,fms coupler icebergs atmos_null land_null ice_ocean_extras sis1 ice_param lm3 am2,$(eval $(call secondaries,$(d))))
+$(foreach d,$(COMPONENT_SRC),$(eval $(call secondaries,$(d))))
 
 # fms_mode = repro, debug, coverage, ...
 fms_mode = $(word 3,$(call slash_to_list, $(1)))
