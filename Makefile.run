@@ -7,11 +7,14 @@
 #   If mom6_memory = static
 #     mom6_configuration = ocean_only/DOME ocean_only/benchmark ocean_only/double_gyre ...
 
-CONFIGS = MOM6-examples
+# Include local configs if present
+-include config.mk
+
+CONFIGS ?= MOM6-examples
 BUILD = build
-MPIRUN = aprun
+MPIRUN ?= aprun
 SHELL = bash
-COMPILERS = gnu intel pgi
+COMPILERS ?= gnu intel pgi
 LOG = > log
 
 all:

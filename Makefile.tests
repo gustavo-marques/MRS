@@ -1,6 +1,9 @@
-CONFIGS = MOM6-examples
+# Include local configs if present
+-include config.mk
+
+CONFIGS ?= MOM6-examples
 BUILD = build
-COMPILERS = gnu intel pgi
+COMPILERS ?= gnu intel pgi
 SHELL = bash
 
 TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz

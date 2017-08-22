@@ -5,11 +5,14 @@
 #   If mom6_memory = dynamic or dynamic_symmetric
 #     mom6_configuration = ocean_only, ice_ocean_SIS, ice_ocean_SIS2, land_ice_ocean_LM3_SIS2, coupled_AM2_LM3_SIS, coupled_AM2_LM3_SIS2
 
+# Include local configs if present
+-include config.mk
+
 CONFIGS ?= MOM6-examples
 BUILD = build
 MPIRUN = aprun
 SHELL = bash
-COMPILERS = gnu intel pgi
+COMPILERS ?= gnu intel pgi
 LOG = > log
 
 SKIP = circle_obcs|tracer_mixing|unit_test|mixed_layer_restrat_2d

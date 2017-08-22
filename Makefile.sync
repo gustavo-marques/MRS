@@ -1,4 +1,9 @@
 
+# Include local configs if present
+-include config.mk
+
+CONFIGS ?= MOM6-examples
+
 ALL_FILES = $(shell git ls-files regressions)
 GNU_FILES = $(shell git ls-files regressions | grep gnu)
 all: $(ALL_FILES)
@@ -11,7 +16,7 @@ pgi: $(subst gnu,pgi,$(GNU_FILES))
 	git status regressions
 
 define sync-stats
-$1: $(subst regressions/,MOM6-examples/,$1)
+$1: $(subst regressions/,$(CONFIGS)/,$1)
 	cp $$< $$@
 	git status --porcelain $$@
 endef
