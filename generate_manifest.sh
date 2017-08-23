@@ -2,9 +2,15 @@
 
 expts=$(find regressions -name ocean.stats.gnu -printf "%h\n")
 
+if [[ "$#" -gt 0 ]]; then
+  CONFIGS=$1
+else
+  CONFIGS="MOM6-examples"
+fi
+
 for r in $expts
 do
-  e=${r/regressions/MOM6-examples}
+  e=${r/regressions/$CONFIGS}
   layout_file=$e/MOM_parameter_doc.layout
   test -f $layout_file && \
     npi=$(egrep "^NIPROC = " $layout_file | awk '{print $3}') &&

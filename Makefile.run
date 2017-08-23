@@ -29,7 +29,7 @@ noop =
 rel_path = $(subst $(noop) $(noop),,$(patsubst %,../,$(call slash_to_list,$(1))))
 
 manifest.mk:
-	bash MRS/generate_manifest.sh > manifest.mk
+	bash MRS/generate_manifest.sh $(CONFIGS) > manifest.mk
 
 # Running
 include manifest.mk
