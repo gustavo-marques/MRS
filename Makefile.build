@@ -201,7 +201,7 @@ $(eval $(call compile,,MOM6,$$(ENV_SCRIPT),))
 define sis2-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(SIS2_SRC)/src/* $(SIS2_SRC)/config_src/$(3)/* $(MOM6_SRC)/src/framework/MOM_memory_macros.h
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: LIST_PATHS_ARGS = $(SIS2_SRC)/src/ $(SIS2_SRC)/config_src/$(3)/ $(MOM6_SRC)/src/framework/MOM_memory_macros.h
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS = -D_FILE_VERSION=\"`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`\" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS = -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/libsis2.a: $(BUILD)/$(1)/$(2)/icebergs/libicebergs.a $(BUILD)/$(1)/$(2)/ice_ocean_extras/libice_ocean_extras.a
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile
@@ -214,7 +214,7 @@ $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(foreach d,dynamic dynamic_symmet
 define libmom6-variables
 $(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/ $(MOM6_SRC)/config_src/coupled_driver/
 $(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/coupled_driver/*
-$(BUILD)/$(1)/$(2)/$(3)/mom6/Makefile: CPP_DEFS += -D_FILE_VERSION=\"`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`\" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
+$(BUILD)/$(1)/$(2)/$(3)/mom6/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/mom6/libmom6.a: $(BUILD)/$(1)/$(2)/fms/libfms.a
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/mom6/path_names
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/mom6/Makefile
@@ -228,7 +228,7 @@ define mom6-ocean-only-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/solo_driver/*
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -D_FILE_VERSION=\"`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`\"
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: LIBS = -L../../fms -lfms
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/MOM6: $(BUILD)/$(1)/$(2)/fms/libfms.a
@@ -248,7 +248,7 @@ $(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: $(MOM6_SRC)/config_src/solo_dri
 $(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/config_src/solo_driver/
 $(foreach e,$(wildcard $(CONFIGS)/$(4)/*),$(eval $(call mom6-static-mom-memory,$(1),$(2),$(3),$(4),$(e))))
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: CPP_DEFS += -D_FILE_VERSION=\"`../../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`\"
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: CPP_DEFS += -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: LIBS += -L../../../fms -lfms
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/MOM6: $(BUILD)/$(1)/$(2)/fms/libfms.a
@@ -353,7 +353,7 @@ versions:
 # build_gnu -j 3m55s
 # build_intel -j 11m40s
 # build_pgi -j 22m50s
-MOM_CONFIGS ?= ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3_SIS2 coupled_AM2_LM3_SIS
+MOM_CONFIGS = ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3_SIS2 coupled_AM2_LM3_SIS
 build_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/repro/$(m)/$(e)/MOM6))
 build_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/repro/$(m)/$(e)/MOM6))
 build_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/repro/$(m)/$(e)/MOM6))
