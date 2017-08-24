@@ -1,10 +1,10 @@
 #!/bin/bash
 
-expts=$(find regressions -name ocean.stats.gnu -printf "%h\n")
+expts=$(find regressions -name ocean.stats.intel -printf "%h\n")
 
 for r in $expts
 do
-  e=${r/regressions/MOM6-examples}
+  e=${r/regressions/MOM6-cases}
   layout_file=$e/MOM_parameter_doc.layout
   test -f $layout_file && \
     npi=$(egrep "^NIPROC = " $layout_file | awk '{print $3}') &&
