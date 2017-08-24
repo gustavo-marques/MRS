@@ -68,22 +68,22 @@ $(foreach c, $(COMPILERS),$(foreach m,$(MODES),$(eval $(call make-env-dep,$c,$m)
 ifeq ($(SITE),ncrc)
 $(BUILD)/gnu/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu ; module load PrgEnv-gnu; module unload netcdf gcc; module load gcc/5.3.0 cray-hdf5 cray-netcdf' >> $@
+#	echo 'source /opt/modules/default/etc/modules.sh' > $@
+#	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu ; module load PrgEnv-gnu; module unload netcdf gcc; module load gcc/5.3.0 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/intel/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu; module load PrgEnv-intel; module unload netcdf intel; module load intel/16.0.3.210 cray-hdf5 cray-netcdf' >> $@
+#	echo 'source /opt/modules/default/etc/modules.sh' > $@
+#	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu; module load PrgEnv-intel; module unload netcdf intel; module load intel/16.0.3.210 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/pgi/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
+#	echo 'source /opt/modules/default/etc/modules.sh' > $@
+#	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'MODULEPATH=/opt/cray/ari/modulefiles:/opt/cray/craype/2.4.2/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/eslogin-c3/modulefiles:/usw/eslogin/modulefiles-c3:/ncrc/home2/fms/local/modulefiles' >> $@
+#	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
 endif
 
 # path_names:
@@ -377,4 +377,5 @@ clean_libs:
 clean_make:
 	find $(BUILD)/ -name "path_names*" -o -name "Makefile" -exec rm {} \;
 clean:
-	rm -rf $(BUILD) 
+	rm -rf $(BUILD)
+
