@@ -353,7 +353,7 @@ versions:
 # build_gnu -j 3m55s
 # build_intel -j 11m40s
 # build_pgi -j 22m50s
-MOM_CONFIGS = ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3_SIS2 coupled_AM2_LM3_SIS
+MOM_CONFIGS ?= ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3_SIS2 coupled_AM2_LM3_SIS
 build_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/repro/$(m)/$(e)/MOM6))
 build_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/repro/$(m)/$(e)/MOM6))
 build_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/repro/$(m)/$(e)/MOM6))
