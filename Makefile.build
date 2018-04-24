@@ -84,14 +84,20 @@ $(BUILD)/pgi/env:
 	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
 	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
 	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
+$(BUILD)/cray/env:
+	mkdir -p $(@D)
+	echo 'source /opt/modules/default/etc/modules.sh' > $@
+	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
+	echo 'module unload PrgEnv-intel ; module load PrgEnv-cray; module unload netcdf pgi; module load cray-hdf5 cray-netcdf' >> $@
 endif
 
 # path_names:
-# - must have LIST_PATH_ARGS set for final target
+# - must have LIST_PATHS_ARGS set for final target
 #$(BUILD)/%/path_names: $(wildcard $(LIST_PATHS_ARGS)*) $(wildcard $(LIST_PATHS_ARGS)*/*) $(wildcard $(LIST_PATHS_ARGS)*/*/*) $$(wildcard $(LIST_PATHS_ARGS)*/*/*/*)
 $(BUILD)/%/path_names:
 	mkdir -p $(@D)
-	cd $(@D); rm -f path_names; $(call rel_path,$(@D))$(LIST_PATHS) $(foreach p,$(LIST_PATHS_ARGS),$(call rel_path,$(@D))$(p)) $(LOG)
+	cd $(@D); rm -f path_names; $(call rel_path,$(@D))$(LIST_PATHS) $(foreach p,$(LIST_PATHS_ARGS),$(call rel_path,$(@D))$(p)) . $(LOG)
 
 # Makefile:
 # - must have MKMF_OPTS set for final target
@@ -260,7 +266,7 @@ define mom6-sis2-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: LIBS += $(foreach l,coupler atmos_null land_null ice_ocean_extras icebergs fms,-L../../$(l))
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: LIBS += $(foreach l,sis2 mom6,-L../$(l))
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: LIBS += $(foreach l,coupler atmos_null land_null sis2 ice_ocean_extras icebergs mom6 fms,-l$(l))
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../fms -I $(FMS_SRC)/include' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/MOM6: $(BUILD)/$(1)/$(2)/fms/libfms.a
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/MOM6: $(BUILD)/$(1)/$(2)/icebergs/libicebergs.a
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/MOM6: $(BUILD)/$(1)/$(2)/$(3)/sis2/libsis2.a
@@ -357,9 +363,11 @@ MOM_CONFIGS ?= ocean_only ice_ocean_SIS2 land_ice_ocean_LM3_SIS2 coupled_AM2_LM3
 build_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/repro/$(m)/$(e)/MOM6))
 build_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/repro/$(m)/$(e)/MOM6))
 build_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/repro/$(m)/$(e)/MOM6))
+build_cray: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/cray/repro/$(m)/$(e)/MOM6))
 debug_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/debug/$(m)/$(e)/MOM6))
 debug_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/debug/$(m)/$(e)/MOM6))
 debug_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/debug/$(m)/$(e)/MOM6))
+debug_cray: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/cray/debug/$(m)/$(e)/MOM6))
 openmp_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/openmp/$(m)/$(e)/MOM6))
 openmp_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/openmp/$(m)/$(e)/MOM6))
 openmp_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/openmp/$(m)/$(e)/MOM6))
@@ -371,6 +379,7 @@ STATIC_CONFIGS ?= ocean_only/DOME ocean_only/benchmark ocean_only/global ocean_o
 static_gnu: $(foreach e,$(STATIC_CONFIGS),$(BUILD)/gnu/repro/static/$(e)/MOM6)
 static_intel: $(foreach e,$(STATIC_CONFIGS),$(BUILD)/intel/repro/static/$(e)/MOM6)
 static_pgi: $(foreach e,$(STATIC_CONFIGS),$(BUILD)/pgi/repro/static/$(e)/MOM6)
+static_cray: $(foreach e,$(STATIC_CONFIGS),$(BUILD)/cray/repro/static/$(e)/MOM6)
 
 clean_libs:
 	find $(BUILD)/ -name "lib*.a" -o -name "MOM6" -exec rm {} \;
