@@ -49,6 +49,7 @@ sed -i "/^ENERGYSAVEDAYS/c ENERGYSAVEDAYS=$DT" MOM_input
 [[ ! -z $INPUT_DAYS ]] && sed -i "/days/c days=$DOUBLE_DAYS," input.nml
 [[ ! -z $INPUT_HOURS ]] && sed -i "/hours/c hours=$DOUBLE_HOURS," input.nml
 test -f ../SIS_input && cp ../SIS_* .
+sed -i "s/'n'/'F'/g" input.nml
 
 # Create first half test
 mkdir -p ../01.ignore
@@ -63,6 +64,7 @@ sed -i "/^RESTART_CONTROL/c RESTART_CONTROL=1" MOM_input
 [[ ! -z $INPUT_DAYS ]] && sed -i "/days/c days=$HALF_DAYS," input.nml
 [[ ! -z $INPUT_HOURS ]] && sed -i "/hours/c hours=$HALF_HOURS," input.nml
 test -f ../SIS_input && cp ../SIS_* .
+sed -i "s/'n'/'F'/g" input.nml
 
 # Create second half test
 mkdir -p ../12.ignore
@@ -76,7 +78,7 @@ sed -i "/^ENERGYSAVEDAYS/c ENERGYSAVEDAYS=$DT" MOM_input
 [[ ! -z $INPUT_DAYS ]] && sed -i "/days/c days=$HALF_DAYS," input.nml
 [[ ! -z $INPUT_HOURS ]] && sed -i "/hours/c hours=$HALF_HOURS," input.nml
 test -f ../SIS_input && cp ../SIS_* .
-sed -i "s/'n'/'r'/g" input.nml
+sed -i "s/'n'/'F'/g" input.nml
 sed -i "/restart_input_dir/c restart_input_dir='INPUT/', " input.nml
 
 echo ${1}:: DAYMAX=$DAYMAX, days=$INPUT_DAYS, hours=$INPUT_HOURS, timeunit=$TIMEUNIT, dt=$DT, dt_forcing=$DT_FORCING, 01=$HALF_DAYMAX, 02=$DOUBLE_DAYMAX
