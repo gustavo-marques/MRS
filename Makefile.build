@@ -90,6 +90,10 @@ $(BUILD)/cray/env:
 	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
 	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
 	echo 'module unload PrgEnv-intel ; module load PrgEnv-cray; module unload netcdf pgi; module load cray-hdf5 cray-netcdf' >> $@
+else
+$(BUILD)/gnu/env:
+	mkdir -p $(@D)
+	echo > $@
 endif
 
 # path_names:
