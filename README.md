@@ -101,3 +101,11 @@ make -f MRS/Makefile.restart gnu_ocean_only gnu_ice_ocean_SIS2 -s -j RESTART_STA
 make -f MRS/Makefile.restart restart_gnu_ocean_only restart_gnu_ice_ocean_SIS2 -s -j
 ```
 Last commands alone is sufficient but seems more susceptible to lustre file systems flakiness.
+
+## Build coverage report
+
+```bash
+make -f MRS/Makefile.coverage gnu_ocean_only -s MEMORY=dynamic_symmetric
+make -f MRS/Makefile.coverage gnu_ice_ocean_SIS2 -s
+make -f MRS/Makefile.coverage coverage
+```

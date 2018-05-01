@@ -357,6 +357,8 @@ what:
 	find $(BUILD) -name "MOM6" -o -name "lib*.a"
 versions:
 	find $(SRC_DIR) -name .git -printf "%h\n" | xargs -L 1 bash -c 'cd "$$0" && git remote -v | grep fetch && git status | grep -v "directory clean" && echo '
+$(BUILD)/lcov:
+	cd $(BUILD); git clone https://github.com/linux-test-project/lcov.git
 
 # For testing this Makefile
 # gaea12
@@ -375,9 +377,9 @@ debug_cray: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(B
 openmp_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/openmp/$(m)/$(e)/MOM6))
 openmp_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/openmp/$(m)/$(e)/MOM6))
 openmp_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/openmp/$(m)/$(e)/MOM6))
-coverage_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/coverage/$(m)/$(e)/MOM6))
-coverage_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/coverage/$(m)/$(e)/MOM6))
-coverage_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/coverage/$(m)/$(e)/MOM6))
+coverage_gnu: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/gnu/coverage/$(m)/$(e)/MOM6)) $(BUILD)/lcov
+coverage_intel: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/intel/coverage/$(m)/$(e)/MOM6)) $(BUILD)/lcov
+coverage_pgi: $(foreach m,dynamic dynamic_symmetric,$(foreach e,$(MOM_CONFIGS),$(BUILD)/pgi/coverage/$(m)/$(e)/MOM6)) $(BUILD)/lcov
 STATIC_CONFIGS ?= ocean_only/DOME ocean_only/benchmark ocean_only/global ocean_only/nonBous_global ocean_only/double_gyre
 # ice_ocean_SIS2/OM4_025 ice_ocean_SIS2/SIS2_cgrid ice_ocean_SIS2/SIS2 coupled_AM2_LM3_SIS2/AM2_SIS2B_MOM6i_1deg coupled_AM2_LM3_SIS2/AM2_SIS2_MOM6i_1deg coupled_AM2_LM3_SIS/CM2G63L coupled_AM2_LM3_SIS/AM2_MOM6i_1deg
 static_gnu: $(foreach e,$(STATIC_CONFIGS),$(BUILD)/gnu/repro/static/$(e)/MOM6)
