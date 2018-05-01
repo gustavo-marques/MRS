@@ -11,7 +11,11 @@
 #   build/compiler/mode/%/lib%.a  for % = fms, icebergs, ice_ocean_extras, am2, lm3
 #   build/compiler/mode/mom6_memory/%/lib%.a  for % = mom6, sis2
 
-CONFIGS = MOM6-examples
+# Include local configs if present
+-include config.mk
+
+CONFIGS ?= MOM6-examples
+URL ?= https://github.com/NOAA-GFDL/MOM6-examples.git
 
 # Local relative paths to with source whose version is usually determined by sub-modules in MOM6-examples
 SRC_DIR = $(CONFIGS)/src
