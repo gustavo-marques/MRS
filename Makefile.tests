@@ -32,6 +32,7 @@ $(1)_$(2).tar.gz: manifest.mk
 	time make -f MRS/Makefile.run $(3) -s -j
 	@echo -n '$(1) $2 finished at ' && date
 	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
+	cd $(CONFIGS) && tar zcf ../params_$$@ `find [oilc]*/ -name "*_parameter_doc.*" -o -name "*available_diags*"`
 endef
 $(foreach c,$(COMPILERS),$(eval $(call collect-regressions,non_symmetric,$(c),$(c)_all)))
 $(foreach c,$(COMPILERS),$(eval $(call collect-regressions,symmetric,$(c),$(c)_all MEMORY=dynamic_symmetric)))
@@ -99,3 +100,12 @@ $(1)_check_restarts:
 	make -f MRS/Makefile.restart restart_$(1)_ocean_only -s -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
+
+# Unpacks parameters from tar file and checks status
+# 1 - compiler, 2 - tar file prefix
+define check-params
+params_$(1)_$(2): $(1).md5
+	cd $(CONFIGS) ; tar zxf ../params_$(2)_$(1).tar.gz
+	cd $(CONFIGS) ; git diff --exit-code [a-rt-z]*
+endef
+$(foreach c,$(COMPILERS),$(eval $(call check-params,$(c),symmetric)))
