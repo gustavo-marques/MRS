@@ -5,6 +5,8 @@ CONFIGS ?= MOM6-examples
 BUILD = build
 COMPILERS ?= gnu intel pgi
 SHELL = bash
+MINUS_S = -s
+MINUS_J = -j
 
 TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz non_symmetric_$(c).tar.gz) static_gnu.tar.gz
 SYM_TAR_FILES = $(foreach c,$(COMPILERS),symmetric_$(c).tar.gz)
@@ -13,8 +15,8 @@ NON_SYM_TAR_FILES = $(foreach c,$(COMPILERS),non_symmetric_$(c).tar.gz) static_g
 TAR_FILES = $(SYM_TAR_FILES) $(NON_SYM_TAR_FILES) restart_results_gnu.tar.gz
 
 all:
-	make -f MRS/Makefile.tests $(NON_SYM_TAR_FILES)
 	make -f MRS/Makefile.tests $(SYM_TAR_FILES)
+	make -f MRS/Makefile.tests $(NON_SYM_TAR_FILES)
 	make -f MRS/Makefile.tests restart_results_gnu.tar.gz
 gnu: non_symmetric_gnu.tar.gz symmetric_gnu.tar.gz static_gnu.tar.gz
 intel: non_symmetric_intel.tar.gz symmetric_intel.tar.gz
@@ -27,9 +29,9 @@ manifest.mk:
 # 1 - prefix, 2 - compiler, 3 - make args
 define collect-regressions
 $(1)_$(2).tar.gz: manifest.mk
-	make -f MRS/Makefile.tests clean_$(2) -s
+	make -f MRS/Makefile.tests clean_$(2) $(MINUS_S)
 	@echo -n '$(1) $2 starting at ' && date
-	time make -f MRS/Makefile.run $(3) -s -j
+	time make -f MRS/Makefile.run $(3) $(MINUS_S) $(MINUS_J)
 	@echo -n '$(1) $2 finished at ' && date
 	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
 	cd $(CONFIGS) && tar zcf ../params_$$@ `find [oilc]*/ -name "*_parameter_doc.*" -o -name "*available_diags*"`
@@ -84,9 +86,9 @@ $(foreach c,$(COMPILERS),$(eval $(call check-layout-reproducibility,$(c))))
 # 1 - compiler
 define run-restart-tests
 $(1)_run_restart:
-	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=01
-	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=02
-	time make -f MRS/Makefile.restart $(1)_ocean_only -s -j RESTART_STAGE=12
+	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=01
+	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=02
+	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=12
 restart_results_$(1).tar.gz: $(1)_run_restart
 	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -path "*/??.ignore/*" -name ocean.stats.$(1)`
 endef
@@ -97,7 +99,7 @@ $(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
 define test-restarts
 $(1)_check_restarts:
 	cd $(CONFIGS) ; tar zxf ../restart_results_$(1).tar.gz
-	make -f MRS/Makefile.restart restart_$(1)_ocean_only -s -k
+	make -f MRS/Makefile.restart restart_$(1)_ocean_only $(MINUS_S) -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
 
