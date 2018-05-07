@@ -18,9 +18,9 @@ COMPILERS ?= gnu intel pgi cray
 LOG = > log
 
 all:
-	time make -f MRS/Makefile.run gnu_all -s -j
-	time make -f MRS/Makefile.run intel_all -s -j
-	time make -f MRS/Makefile.run pgi_all -s -j
+	time make -f MRS/Makefile.coverage gnu_all -s -j
+	time make -f MRS/Makefile.coverage intel_all -s -j
+	time make -f MRS/Makefile.coverage pgi_all -s -j
 
 # Converts a path a/b/c to a list "a b c"
 slash_to_list = $(subst /, ,$(1))
