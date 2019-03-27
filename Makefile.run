@@ -15,7 +15,6 @@ BUILD = build
 MPIRUN ?= aprun
 SHELL = bash
 COMPILERS ?= gnu intel pgi
-LOG = > log
 
 all:
 	time make -f MRS/Makefile.run gnu_all -s -j
