@@ -109,3 +109,7 @@ make -f MRS/Makefile.coverage gnu_ocean_only -s MEMORY=dynamic_symmetric
 make -f MRS/Makefile.coverage gnu_ice_ocean_SIS2 -s
 make -f MRS/Makefile.coverage coverage
 ```
+
+```bash
+make -f MRS/Makefile.run gnu_all MEMORY=dynamic_symmetric -s -j && make -f MRS/Makefile.run intel_all -s -j && make -f MRS/Makefile.run all MEMORY=dynamic_symmetric -s -j
+```
