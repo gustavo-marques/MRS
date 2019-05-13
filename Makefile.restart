@@ -10,7 +10,7 @@
 
 CONFIGS ?= MOM6-examples
 BUILD = build
-MPIRUN = aprun
+MPIRUN = srun -mblock --exclusive
 SHELL = bash
 COMPILERS ?= gnu intel pgi
 LOG = > log
