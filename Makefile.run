@@ -12,9 +12,9 @@
 
 CONFIGS ?= MOM6-examples
 BUILD = build
-MPIRUN ?= aprun
+MPIRUN ?= srun -mblock --exclusive
 SHELL = bash
-COMPILERS ?= gnu intel pgi
+COMPILERS ?= gnu intel pgi cray
 
 all:
 	time make -f MRS/Makefile.run gnu_all -s -j
