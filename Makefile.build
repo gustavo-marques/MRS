@@ -196,7 +196,7 @@ $(BUILD)/%/mom6/libmom6.a: MKMF_OPTS = -p libmom6.a -o '-I../../fms' -c '$(CPP_D
 $(eval $(call compile,mom6/,libmom6.a,../../../env,))
 
 # build/compiler/mode/mom6_memory/mom6_configuration/MOM6
-$(BUILD)/%/ocean_only/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/config_src/solo_driver/
+$(BUILD)/%/ocean_only/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/config_src/solo_driver/ $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/)
 $(eval $(call compile,,MOM6,$$(ENV_SCRIPT),))
 
 # Generate lists of variables and dependencies for SIS2 libraries
@@ -215,8 +215,8 @@ $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(foreach d,dynamic dynamic_symmet
 # Generate lists of variables and dependencies for MOM6 libraries
 # $(1) = compiler, $(2) = mode, $(3) = memory style
 define libmom6-variables
-$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/ $(MOM6_SRC)/config_src/coupled_driver/
-$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/coupled_driver/*
+$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/ $(MOM6_SRC)/config_src/coupled_driver/ $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/)
+$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/coupled_driver/* $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/*)
 $(BUILD)/$(1)/$(2)/$(3)/mom6/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/mom6/libmom6.a: $(BUILD)/$(1)/$(2)/fms/libfms.a
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/mom6/path_names
@@ -229,7 +229,7 @@ $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(foreach d,dynamic dynamic_symmet
 # $(1) = compiler, $(2) = mode, $(3) = memory style, $(4) = mom6 configuration
 define mom6-ocean-only-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/solo_driver/*
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/solo_driver/* $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/*)
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
@@ -247,8 +247,8 @@ endef
 define mom6-static-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/*
-$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: $(MOM6_SRC)/config_src/solo_driver/*
-$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/config_src/solo_driver/
+$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: $(MOM6_SRC)/config_src/solo_driver/* $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/*)
+$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/config_src/solo_driver/ $(wildcard $(MOM6_SRC)/config_src/external_APIs/*/)
 $(foreach e,$(wildcard $(CONFIGS)/$(4)/*),$(eval $(call mom6-static-mom-memory,$(1),$(2),$(3),$(4),$(e))))
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
