@@ -82,7 +82,7 @@ $(BUILD)/pgi/env:
 	echo 'source /opt/modules/default/etc/modules.sh' > $@
 	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
 	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
-	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
+	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/20.1.0 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/cray/env:
 	mkdir -p $(@D)
 	echo 'source /opt/modules/default/etc/modules.sh' > $@
