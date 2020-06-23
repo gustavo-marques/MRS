@@ -31,6 +31,7 @@ define collect-regressions
 $(1)_$(2).tar.gz: manifest.mk
 	make -f MRS/Makefile.tests clean_$(2) $(MINUS_S)
 	@echo -n '$(1) $2 starting at ' && date
+	-time make -f MRS/Makefile.run $(3) $(MINUS_S) $(MINUS_J)
 	time make -f MRS/Makefile.run $(3) $(MINUS_S) $(MINUS_J)
 	@echo -n '$(1) $2 finished at ' && date
 	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -name ocean.stats.$(2)`
