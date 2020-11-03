@@ -37,9 +37,9 @@ make -f MRS/Makefile.clone clone_gfdl
 ## Build executable
 
 ```bash
-make -f MRS/Makefile.build build_gnu -s -j
-make -f MRS/Makefile.build build_intel -s -j
-make -f MRS/Makefile.build build_pgi -s -j
+make -f MRS/Makefile.build repro_gnu -s -j
+make -f MRS/Makefile.build repro_intel -s -j
+make -f MRS/Makefile.build repro_pgi -s -j
 ```
 
 ## Run model
