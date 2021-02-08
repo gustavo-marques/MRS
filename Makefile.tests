@@ -88,8 +88,11 @@ $(foreach c,$(COMPILERS),$(eval $(call check-layout-reproducibility,$(c))))
 define run-restart-tests
 $(1)_run_restart:
 	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=01
+	time make -f MRS/Makefile.restart $(1)_ice_ocean_SIS2 $(MINUS_S) $(MINUS_J) RESTART_STAGE=01
 	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=02
+	time make -f MRS/Makefile.restart $(1)_ice_ocean_SIS2 $(MINUS_S) $(MINUS_J) RESTART_STAGE=02
 	time make -f MRS/Makefile.restart $(1)_ocean_only $(MINUS_S) $(MINUS_J) RESTART_STAGE=12
+	time make -f MRS/Makefile.restart $(1)_ice_ocean_SIS2 $(MINUS_S) $(MINUS_J) RESTART_STAGE=12
 restart_results_$(1).tar.gz: $(1)_run_restart
 	cd $(CONFIGS) && tar zcf ../$$@ `find [oilc]*/ -path "*/??.ignore/*" -name ocean.stats.$(1)`
 endef
@@ -100,7 +103,7 @@ $(foreach c,$(COMPILERS),$(eval $(call run-restart-tests,$(c))))
 define test-restarts
 $(1)_check_restarts:
 	cd $(CONFIGS) ; tar zxf ../restart_results_$(1).tar.gz
-	make -f MRS/Makefile.restart restart_$(1)_ocean_only $(MINUS_S) -k
+	make -f MRS/Makefile.restart restart_$(1)_ocean_only restart_$(1)_ice_ocean_SIS2 $(MINUS_S) -k
 endef
 $(foreach c,$(COMPILERS),$(eval $(call test-restarts,$(c))))
 
