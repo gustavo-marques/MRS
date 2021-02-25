@@ -2,7 +2,7 @@
 #
 #   compiler = gnu, intel, pgi, cray, ...
 #   mode = repro, debug, coverage, ...
-#   If mom6_memory = dynamic or dynamic_symmetric
+#   If mom6_memory = dynamic_nonsymmetric or dynamic_symmetric
 #     mom6_configuration = ocean_only, ice_ocean_SIS, ice_ocean_SIS2, land_ice_ocean_LM3_SIS2, coupled_AM2_LM3_SIS, coupled_AM2_LM3_SIS2
 
 # Include local configs if present
@@ -43,7 +43,7 @@ $(foreach s,01 12 02,$(foreach f,input.nml MOM_input MOM_override,$(CONFIGS)/%/$
 -include manifest.mk
 
 MODE ?= repro
-MEMORY ?= dynamic
+MEMORY ?= dynamic_nonsymmetric
 
 # Dynamic pathway for building ocean.stats.*
 define run-dynamic-model

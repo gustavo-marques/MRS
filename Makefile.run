@@ -2,7 +2,7 @@
 #
 #   compiler = gnu, intel, pgi, cray, ...
 #   mode = repro, debug, coverage, ...
-#   If mom6_memory = dynamic or dynamic_symmetric
+#   If mom6_memory = dynamic_nonsymmetric or dynamic_symmetric
 #     mom6_configuration = ocean_only, ice_ocean_SIS, ice_ocean_SIS2, land_ice_ocean_LM3_SIS2, coupled_AM2_LM3_SIS, coupled_AM2_LM3_SIS2
 #   If mom6_memory = static
 #     mom6_configuration = ocean_only/DOME ocean_only/benchmark ocean_only/double_gyre ...
@@ -34,7 +34,7 @@ manifest.mk:
 include manifest.mk
 
 MODE ?= repro
-MEMORY ?= dynamic
+MEMORY ?= dynamic_symmetric
 
 ifeq ($(MEMORY),static)
 # Static pathway for building ocean.stats.*
