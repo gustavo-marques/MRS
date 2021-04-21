@@ -12,7 +12,7 @@
 #   build/compiler/mode/mom6_memory/%/lib%.a  for % = mom6, sis2
 
 # Include local configs if present
--include config.mk
+#-include config.mk
 
 CONFIGS ?= MOM6-examples
 
@@ -29,7 +29,7 @@ MKMF_SRC = $(SRC_DIR)/mkmf
 LIST_PATHS = $(MKMF_SRC)/bin/list_paths -l
 MKMF = $(MKMF_SRC)/bin/mkmf
 BUILD = build
-SITE ?= ncrc
+SITE = cheyenne
 
 # Local relative paths to source available behind GFDL firewall
 ICE_PARAM_SRC=$(SRC_DIR)/ice_param
@@ -44,7 +44,8 @@ SIS1_SRC=$(SRC_DIR)/sis1
 
 SHELL = bash
 COMPONENT_SRC ?= fms coupler icebergs atmos_null land_null sis1 ice_param lm3 am2
-COMPILERS ?= gnu intel pgi cray
+#COMPILERS ?= gnu intel pgi cray
+COMPILERS ?= intel
 MODES = repro debug coverage openmp
 LOG = > log
 
@@ -67,27 +68,28 @@ $(foreach c, $(COMPILERS),$(foreach m,$(MODES),$(eval $(call make-env-dep,$c,$m)
 ifeq ($(SITE),ncrc)
 $(BUILD)/gnu/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
-	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu ; module load PrgEnv-gnu; module unload netcdf gcc; module load gcc/5.3.0 cray-hdf5 cray-netcdf' >> $@
+	#echo 'source /opt/modules/default/etc/modules.sh' > $@
+	#echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+	#echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
+	#echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu ; module load PrgEnv-gnu; module unload netcdf gcc; module load gcc/5.3.0 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/intel/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
-	echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu; module load PrgEnv-intel; module unload netcdf intel; module load intel/16.0.3.210 cray-hdf5 cray-netcdf' >> $@
+  echo '###### INTEL #####'
+	#echo 'source /opt/modules/default/etc/modules.sh' > $@
+	#echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+	#echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
+	#echo 'module unload PrgEnv-pgi PrgEnv-intel PrgEnv-gnu; module load PrgEnv-intel; module unload netcdf intel; module load intel/16.0.3.210 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/pgi/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
-	echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
+	#echo 'source /opt/modules/default/etc/modules.sh' > $@
+	#echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+	#echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
+	#echo 'module unload PrgEnv-intel ; module load PrgEnv-pgi; module unload netcdf pgi; module load pgi/16.5.0 cray-hdf5 cray-netcdf' >> $@
 $(BUILD)/cray/env:
 	mkdir -p $(@D)
-	echo 'source /opt/modules/default/etc/modules.sh' > $@
-	echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
-	echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
+	#echo 'source /opt/modules/default/etc/modules.sh' > $@
+	#echo 'module use -a /ncrc/home2/fms/local/modulefiles' >> $@
+	#echo 'MODULEPATH=/usw/eslogin/modulefiles-c4:/sw/eslogin-c4/modulefiles:/opt/cray/pe/ari/modulefiles:/opt/cray/ari/modulefiles:/opt/cray/pe/modulefiles:/opt/cray/modulefiles:/opt/modulefiles:/sw/common/modulefiles' >> $@
 	echo 'module unload PrgEnv-intel ; module load PrgEnv-cray; module unload netcdf pgi; module load cray-hdf5 cray-netcdf' >> $@
 else
 $(BUILD)/gnu/env:
@@ -196,7 +198,7 @@ $(BUILD)/%/mom6/libmom6.a: MKMF_OPTS = -p libmom6.a -o '-I../../fms' -c '$(CPP_D
 $(eval $(call compile,mom6/,libmom6.a,../../../env,))
 
 # build/compiler/mode/mom6_memory/mom6_configuration/MOM6
-$(BUILD)/%/ocean_only/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/config_src/solo_driver/
+$(BUILD)/%/ocean_only/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/config_src/solo_driver/ $(wildcard $(MOM6_SRC)/config_src/ext*/*/)
 $(eval $(call compile,,MOM6,$$(ENV_SCRIPT),))
 
 # Generate lists of variables and dependencies for SIS2 libraries
@@ -215,8 +217,8 @@ $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(foreach d,dynamic dynamic_symmet
 # Generate lists of variables and dependencies for MOM6 libraries
 # $(1) = compiler, $(2) = mode, $(3) = memory style
 define libmom6-variables
-$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/ $(MOM6_SRC)/config_src/coupled_driver/
-$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/coupled_driver/*
+$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: LIST_PATHS_ARGS = $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/ $(MOM6_SRC)/config_src/coupled_driver/ $(wildcard $(MOM6_SRC)/config_src/ext*/*/)
+$(BUILD)/$(1)/$(2)/$(3)/mom6/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/coupled_driver/* $(wildcard $(MOM6_SRC)/config_src/ext*/*/*)
 $(BUILD)/$(1)/$(2)/$(3)/mom6/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`" -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
 $(BUILD)/$(1)/$(2)/$(3)/mom6/libmom6.a: $(BUILD)/$(1)/$(2)/fms/libfms.a
 .SECONDARY: $(BUILD)/$(1)/$(2)/$(3)/mom6/path_names
@@ -229,7 +231,7 @@ $(foreach c,$(COMPILERS),$(foreach m,$(MODES),$(foreach d,dynamic dynamic_symmet
 # $(1) = compiler, $(2) = mode, $(3) = memory style, $(4) = mom6 configuration
 define mom6-ocean-only-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/ $(MOM6_SRC)/config_src/$(3)/
-$(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/solo_driver/*
+$(BUILD)/$(1)/$(2)/$(3)/$(4)/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/* $(MOM6_SRC)/config_src/$(3)/* $(MOM6_SRC)/config_src/solo_driver/* $(wildcard $(MOM6_SRC)/config_src/ext*/*/*)
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/Makefile: CPP_DEFS += -DSTATSLABEL=\"$(STATS_PLATFORM)$(1)$(STATS_COMPILER_VER)\"
@@ -247,8 +249,8 @@ endef
 define mom6-static-variables
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/src/*/ $(MOM6_SRC)/src/*/*/
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/path_names: $(MOM6_SRC)/src/*/* $(MOM6_SRC)/src/*/*/*
-$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: $(MOM6_SRC)/config_src/solo_driver/*
-$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/config_src/solo_driver/
+$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: $(MOM6_SRC)/config_src/solo_driver/* $(wildcard $(MOM6_SRC)/config_src/ext*/*/*)
+$(BUILD)/$(1)/$(2)/$(3)/ocean_only/%/path_names: LIST_PATHS_ARGS += $(MOM6_SRC)/config_src/solo_driver/ $(wildcard $(MOM6_SRC)/config_src/ext*/*/)
 $(foreach e,$(wildcard $(CONFIGS)/$(4)/*),$(eval $(call mom6-static-mom-memory,$(1),$(2),$(3),$(4),$(e))))
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: MKMF_OPTS = -p MOM6 -o '-I../../../fms' -l '$$(LIBS)' -c '$$(CPP_DEFS)'
 $(BUILD)/$(1)/$(2)/$(3)/$(4)/%/Makefile: CPP_DEFS += -D_FILE_VERSION="`../../../../../../$(MKMF_SRC)/bin/git-version-string $$$$<`"
@@ -385,4 +387,5 @@ clean_libs:
 clean_make:
 	find $(BUILD)/ -name "path_names*" -o -name "Makefile" -exec rm {} \;
 clean:
-	rm -rf $(BUILD) 
+	rm -rf $(BUILD)
+
